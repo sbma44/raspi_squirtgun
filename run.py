@@ -25,7 +25,6 @@ def keepalive(sgc):
 
     while not sgc.terminate:
         if sgc.send_keepalives:
-            print 'sending keepalive'
             sgc.ws_tx.send(json.dumps({'keepalive': sgc.uuid}))
         time.sleep(RECONNECT_SLEEP)
 
@@ -33,7 +32,6 @@ class SquirtgunClient(object):
     """Maintains a websocket connection with the server"""
     def __init__(self, host):
         super(SquirtgunClient, self).__init__()
-        # self.squirtgun = Squirtgun(debug='--debug' in sys.argv)
         self.squirtgun = Squirtgun(debug='--debug' in sys.argv)        
         self.host = host
         self.terminate = False
@@ -87,8 +85,6 @@ if __name__ == '__main__':
     target_host = HOST
     if args.host is not None:
         target_host = args.host[0]
-
-    print target_host
 
     sgc = SquirtgunClient(target_host)
     sgc.run()
