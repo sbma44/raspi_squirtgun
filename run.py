@@ -46,7 +46,7 @@ class SquirtgunClient(object):
                 self.ws_rx = websocket.create_connection(RX_URL)
                 self.ws_tx = websocket.create_connection(TX_URL)
                 self.send_keepalives = True
-                
+
                 print 'connected!'
                 while True and not self.terminate:
                     msg = json.loads(self.ws_rx.recv())
@@ -59,7 +59,7 @@ class SquirtgunClient(object):
                 if e.errno == 61:
                     print 'connection refused'
                 else:
-                    print 'socket error number %d' % err.errno
+                    print 'socket error number %d' % e.errno
                 self.send_keepalives = False
             except Exception, e:            
                 self.send_keepalives = False    
