@@ -12,16 +12,17 @@ class Squirtgun(object):
 
         if not self.debug:
             import wiringpi
-            wiringpi.wiringPiSetup()
-            wiringpi.pinMode(self.OUT_PIN, wiringpi.OUTPUT)
+            self.wiringpi = wiringpi
+            self.wiringpi.wiringPiSetup()
+            self.wiringpi.pinMode(self.OUT_PIN, self.wiringpi.OUTPUT)
 
     def _on(self):
         if not self.debug:
-            wiringpi.digitalWrite(OUT_PIN, wiringpi.HIGH)
+            self.wiringpi.digitalWrite(self.OUT_PIN, self.wiringpi.HIGH)
 
     def _off(self):
         if not self.debug:
-            wiringpi.digitalWrite(OUT_PIN, wiringpi.LOW)
+            self.wiringpi.digitalWrite(self.OUT_PIN, self.wiringpi.LOW)
 
     def pulse(self, delay=0.5):
         if self.debug:
