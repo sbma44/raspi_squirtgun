@@ -16,7 +16,11 @@ class Thread(threading.Thread):
         self.setDaemon(True)
         self.start()
 
-def keepalive(sgc):    
+def keepalive(sgc):  
+    # wait until keepalives are enabled...
+    while not sgc.send_keepalives:
+        time.sleep(0.01)
+
     while not sgc.terminate:
         if sgc.send_keepalives:
             print 'sending keepalive'
@@ -27,7 +31,8 @@ class SquirtgunClient(object):
     """Maintains a websocket connection with the server"""
     def __init__(self, host):
         super(SquirtgunClient, self).__init__()
-        self.squirtgun = Squirtgun(debug='--debug' in sys.argv)
+        # self.squirtgun = Squirtgun(debug='--debug' in sys.argv)
+        self.squirtgun = Squirtgun(debug='--debug' in sys.argv)        
         self.host = host
         self.terminate = False
         self.send_keepalives = False
