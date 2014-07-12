@@ -1,6 +1,7 @@
 import sys
 import json
 import time
+import argparse
 import socket
 import websocket
 import threading
@@ -24,9 +25,10 @@ def keepalive(sgc):
 
 class SquirtgunClient(object):
     """Maintains a websocket connection with the server"""
-    def __init__(self):
+    def __init__(self, host):
         super(SquirtgunClient, self).__init__()
         self.squirtgun = Squirtgun(debug='--debug' in sys.argv)
+        self.host = host
         self.terminate = False
         self.send_keepalives = False
         self.uuid = uuid.uuid1().get_hex()
@@ -43,8 +45,8 @@ class SquirtgunClient(object):
                 if hasattr(self, 'ws_tx'):
                     del self.ws_tx
 
-                self.ws_rx = websocket.create_connection(RX_URL)
-                self.ws_tx = websocket.create_connection(TX_URL)
+                self.ws_rx = websocket.create_connection('%s/receive' % self.host)
+                self.ws_tx = websocket.create_connection('%s/submit' % self.host)
                 self.send_keepalives = True
 
                 print 'connected!'
@@ -71,6 +73,16 @@ class SquirtgunClient(object):
 
 
 if __name__ == '__main__':
-    sgc = SquirtgunClient()
+    parser = argparse.ArgumentParser(description='Listen for squirtgun commands.')
+    parser.add_argument('--host', type=str, nargs=1, help='Specify a host URL', metavar=('URL',))
+    args = parser.parse_args()
+
+    target_host = HOST
+    if args.host is not None:
+        target_host = args.host[0]
+
+    print target_host
+
+    sgc = SquirtgunClient(target_host)
     sgc.run()
 
