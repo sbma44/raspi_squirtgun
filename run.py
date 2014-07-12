@@ -58,7 +58,8 @@ class SquirtgunClient(object):
                 while True and not self.terminate:
                     msg = json.loads(self.ws_rx.recv())
                     if msg.get('handle') == 'FIRE':
-                        self.squirtgun.pulse(float(msg.get('text', '0.5')))
+                        if time.time() - int(msg.get('timestamp','0')) < MESSAGE_DISCARD_THRESHOLD:
+                            self.squirtgun.pulse(float(msg.get('text', '0.5')))
             except websocket.WebSocketConnectionClosedException, e:
                 print 'connection closed'
                 self.send_keepalives = False
